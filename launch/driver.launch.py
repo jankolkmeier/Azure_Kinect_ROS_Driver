@@ -118,6 +118,10 @@ def generate_launch_description():
         default_value="0.0",
         description="Set between 0 for no smoothing and 1 for full smoothing"),
     DeclareLaunchArgument(
+        'body_tracking_use_cpu',
+        default_value="false",
+        description="If set to true CPU will be used for body tracking instead of GPU"),
+    DeclareLaunchArgument(
         'rescale_ir_to_mono8',
         default_value="false",
         description="Whether to rescale the IR image to an 8-bit monochrome image for visualization and further processing. A scaling factor (ir_mono8_scaling_factor) is applied."),
@@ -157,6 +161,7 @@ def generate_launch_description():
             {'recording_loop_enabled': launch.substitutions.LaunchConfiguration('recording_loop_enabled')},
             {'body_tracking_enabled': launch.substitutions.LaunchConfiguration('body_tracking_enabled')},
             {'body_tracking_smoothing_factor': launch.substitutions.LaunchConfiguration('body_tracking_smoothing_factor')},
+            {'body_tracking_use_cpu': launch.substitutions.LaunchConfiguration('body_tracking_use_cpu')},
             {'rescale_ir_to_mono8': launch.substitutions.LaunchConfiguration('rescale_ir_to_mono8')},
             {'ir_mono8_scaling_factor': launch.substitutions.LaunchConfiguration('ir_mono8_scaling_factor')},
             {'imu_rate_target': launch.substitutions.LaunchConfiguration('imu_rate_target')},

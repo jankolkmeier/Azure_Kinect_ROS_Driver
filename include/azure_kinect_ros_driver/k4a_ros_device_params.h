@@ -65,6 +65,7 @@
              "Controls the temporal smoothing of joints across frames. Set between 0 for no smoothing and 1 for full " \
              "smoothing.",                                                                                             \
              float, 0.0f)                                                                                              \
+  LIST_ENTRY(body_tracking_use_cpu, "True if body tracking should run on CPU instead of GPU.", bool, false)            \
   LIST_ENTRY(imu_rate_target, "Desired imu message rate. Set to 0 to use full rate (1.6 kHz), which is the default.",  \
              int, 0)                                                                                                   \
   LIST_ENTRY(rescale_ir_to_mono8,                                                                                      \

@@ -72,6 +72,7 @@ K4AROSDevice::K4AROSDevice()
   this->declare_parameter("recording_loop_enabled", rclcpp::ParameterValue(false));
   this->declare_parameter("body_tracking_enabled", rclcpp::ParameterValue(false));
   this->declare_parameter("body_tracking_smoothing_factor", rclcpp::ParameterValue(0.0f));
+  this->declare_parameter("body_tracking_use_cpu", rclcpp::ParameterValue(false));
   this->declare_parameter("rescale_ir_to_mono8", rclcpp::ParameterValue(false));
   this->declare_parameter("ir_mono8_scaling_factor", rclcpp::ParameterValue(1.0f));
   this->declare_parameter("imu_rate_target", rclcpp::ParameterValue(0));
@@ -347,7 +348,19 @@ k4a_result_t K4AROSDevice::startCameras()
   // When calibration is initialized the body tracker can be created with the device calibration
   if (params_.body_tracking_enabled)
   {
-    k4abt_tracker_ = k4abt::tracker::create(calibration_data_.k4a_calibration_);
+    /*
+    */
+    if (params_.body_tracking_use_cpu) {
+      k4abt_tracker_configuration_t k4a_tracker_configuration = { K4ABT_SENSOR_ORIENTATION_DEFAULT,
+                                                                  K4ABT_TRACKER_PROCESSING_MODE_CPU,
+                                                                  0, // GPU DEVICE
+                                                                  NULL }; // MODEL PATH
+      RCLCPP_INFO_STREAM(this->get_logger(),"RUNNING ON CPU");
+      k4abt_tracker_ = k4abt::tracker::create(calibration_data_.k4a_calibration_, k4a_tracker_configuration);
+    } else {
+      RCLCPP_INFO_STREAM(this->get_logger(),"RUNNING ON GPU");
+      k4abt_tracker_ = k4abt::tracker::create(calibration_data_.k4a_calibration_);
+    }
     k4abt_tracker_.set_temporal_smoothing(params_.body_tracking_smoothing_factor);
   }
 #endif
@@ -768,7 +781,8 @@ k4a_result_t K4AROSDevice::getBodyMarker(const k4abt_body_t& body, std::shared_p
 
   // Set the lifetime to 0.25 to prevent flickering for even 5fps configurations.
   // New markers with the same ID will replace old markers as soon as they arrive.
-  marker_msg->lifetime = rclcpp::Duration(0.25);
+  //marker_msg->lifetime = rclcpp::Duration(0.25);
+  marker_msg->lifetime = rclcpp::Duration(int32_t(0),uint32_t(25000000));
   marker_msg->id = body.id * 100 + jointType;
   marker_msg->type = Marker::SPHERE;
 
