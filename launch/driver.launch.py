@@ -98,9 +98,9 @@ def generate_launch_description():
         default_value="false",
         description="Argument which specified if the entire launch file should terminate if the node dies"),
     DeclareLaunchArgument(
-        'sensor_sn',
+        'sensor',
         default_value="",
-        description="Sensor serial number. If none provided, the first sensor will be selected"),
+        description="Sensor to use. FRONT for front, SIDE for side. If none provided, the first sensor will be selected"),
     DeclareLaunchArgument(
         'recording_file',
         default_value="",
@@ -156,7 +156,7 @@ def generate_launch_description():
             {'point_cloud': launch.substitutions.LaunchConfiguration('point_cloud')},
             {'rgb_point_cloud': launch.substitutions.LaunchConfiguration('rgb_point_cloud')},
             {'point_cloud_in_depth_frame': launch.substitutions.LaunchConfiguration('point_cloud_in_depth_frame')},
-            {'sensor_sn': launch.substitutions.LaunchConfiguration('sensor_sn')},
+            {'sensor': launch.substitutions.LaunchConfiguration('sensor')},
             {'recording_file': launch.substitutions.LaunchConfiguration('recording_file')},
             {'recording_loop_enabled': launch.substitutions.LaunchConfiguration('recording_loop_enabled')},
             {'body_tracking_enabled': launch.substitutions.LaunchConfiguration('body_tracking_enabled')},

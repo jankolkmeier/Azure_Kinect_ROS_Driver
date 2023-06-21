@@ -173,9 +173,15 @@ K4AROSDevice::K4AROSDevice()
 
     RCLCPP_INFO_STREAM(this->get_logger(),"Found " << k4a_device_count << " sensors");
 
-    if (params_.sensor_sn != "")
+    std::string sensor_sn = "";
+    if (params_.sensor != "")
     {
-      RCLCPP_INFO_STREAM(this->get_logger(),"Searching for sensor with serial number: " << params_.sensor_sn);
+      if (params_.sensor == "FRONT") {
+        sensor_sn = "000128300312";
+      } else if (params_.sensor == "SIDE") {
+        sensor_sn = "000585314512";
+      }
+      RCLCPP_INFO_STREAM(this->get_logger(),"Searching for sensor with sn: " << sensor_sn);
     }
     else
     {
@@ -199,9 +205,9 @@ K4AROSDevice::K4AROSDevice()
       RCLCPP_INFO_STREAM(this->get_logger(),"K4A[" << i << "] : " << device.get_serialnum());
 
       // Try to match serial number
-      if (params_.sensor_sn != "")
+      if (sensor_sn != "")
       {
-        if (device.get_serialnum() == params_.sensor_sn)
+        if (device.get_serialnum() == sensor_sn)
         {
           k4a_device_ = std::move(device);
           break;
