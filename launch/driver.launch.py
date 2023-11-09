@@ -102,6 +102,10 @@ def generate_launch_description():
         default_value="",
         description="Sensor to use. FRONT for front, SIDE for side. If none provided, the first sensor will be selected"),
     DeclareLaunchArgument(
+        'tf_prefix',
+        default_value="",
+        description="Sensor tf prefix"),
+    DeclareLaunchArgument(
         'recording_file',
         default_value="",
         description="Absolute path to a mkv recording file which will be used with the playback api instead of opening a device"),
@@ -157,6 +161,7 @@ def generate_launch_description():
             {'rgb_point_cloud': launch.substitutions.LaunchConfiguration('rgb_point_cloud')},
             {'point_cloud_in_depth_frame': launch.substitutions.LaunchConfiguration('point_cloud_in_depth_frame')},
             {'sensor': launch.substitutions.LaunchConfiguration('sensor')},
+            {'tf_prefix': launch.substitutions.LaunchConfiguration('tf_prefix')},
             {'recording_file': launch.substitutions.LaunchConfiguration('recording_file')},
             {'recording_loop_enabled': launch.substitutions.LaunchConfiguration('recording_loop_enabled')},
             {'body_tracking_enabled': launch.substitutions.LaunchConfiguration('body_tracking_enabled')},

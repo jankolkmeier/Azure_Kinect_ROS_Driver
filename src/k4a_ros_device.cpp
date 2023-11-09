@@ -67,6 +67,8 @@ K4AROSDevice::K4AROSDevice()
   this->declare_parameter("point_cloud", rclcpp::ParameterValue(true));
   this->declare_parameter("rgb_point_cloud", rclcpp::ParameterValue(false));
   this->declare_parameter("point_cloud_in_depth_frame", rclcpp::ParameterValue(true));
+  this->declare_parameter("sensor", rclcpp::ParameterValue(""));
+  this->declare_parameter("tf_prefix", rclcpp::ParameterValue(""));
   this->declare_parameter("sensor_sn", rclcpp::ParameterValue(""));
   this->declare_parameter("recording_file", rclcpp::ParameterValue(""));
   this->declare_parameter("recording_loop_enabled", rclcpp::ParameterValue(false));
@@ -178,7 +180,7 @@ K4AROSDevice::K4AROSDevice()
     {
       if (params_.sensor == "FRONT") {
         sensor_sn = "000128300312";
-      } else if (params_.sensor == "SIDE") {
+      } else if (params_.sensor == "LEFT") {
         sensor_sn = "000585314512";
       }
       RCLCPP_INFO_STREAM(this->get_logger(),"Searching for sensor with sn: " << sensor_sn);
@@ -978,8 +980,8 @@ void K4AROSDevice::framePublisherThread()
           ir_raw_frame->header.stamp = capture_time;
           ir_raw_frame->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
 
-          ir_raw_publisher_.publish(ir_raw_frame);
-          ir_raw_camerainfo_publisher_->publish(ir_raw_camera_info);
+          //ir_raw_publisher_.publish(ir_raw_frame);
+          //ir_raw_camerainfo_publisher_->publish(ir_raw_camera_info);
         }
       }
 
@@ -1010,8 +1012,8 @@ void K4AROSDevice::framePublisherThread()
             depth_raw_frame->header.stamp = capture_time;
             depth_raw_frame->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
 
-            depth_raw_publisher_.publish(depth_raw_frame);
-            depth_raw_camerainfo_publisher_->publish(depth_raw_camera_info);
+            //depth_raw_publisher_.publish(depth_raw_frame);
+            //depth_raw_camerainfo_publisher_->publish(depth_raw_camera_info);
           }
         }
 
@@ -1039,11 +1041,11 @@ void K4AROSDevice::framePublisherThread()
 
             depth_rect_frame->header.stamp = capture_time;
             depth_rect_frame->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.rgb_camera_frame_;
-            depth_rect_publisher_.publish(depth_rect_frame);
+            //depth_rect_publisher_.publish(depth_rect_frame);
 
             // Re-synchronize the header timestamps since we cache the camera calibration message
             depth_rect_camera_info.header.stamp = capture_time;
-            depth_rect_camerainfo_publisher_->publish(depth_rect_camera_info);
+            //depth_rect_camerainfo_publisher_->publish(depth_rect_camera_info);
           }
         }
 
@@ -1089,11 +1091,11 @@ void K4AROSDevice::framePublisherThread()
 
           rgb_jpeg_frame->header.stamp = capture_time;
           rgb_jpeg_frame->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.rgb_camera_frame_;
-          rgb_jpeg_publisher_->publish(*rgb_jpeg_frame);
+          //rgb_jpeg_publisher_->publish(*rgb_jpeg_frame);
 
           // Re-synchronize the header timestamps since we cache the camera calibration message
           rgb_raw_camera_info.header.stamp = capture_time;
-          rgb_raw_camerainfo_publisher_->publish(rgb_raw_camera_info);
+          //rgb_raw_camerainfo_publisher_->publish(rgb_raw_camera_info);
         }
       }
       else if (params_.color_format == "bgra")
@@ -1142,11 +1144,11 @@ void K4AROSDevice::framePublisherThread()
 
           rgb_rect_frame->header.stamp = capture_time;
           rgb_rect_frame->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
-          rgb_rect_publisher_.publish(rgb_rect_frame);
+          //rgb_rect_publisher_.publish(rgb_rect_frame);
 
           // Re-synchronize the header timestamps since we cache the camera calibration message
           rgb_rect_camera_info.header.stamp = capture_time;
-          rgb_rect_camerainfo_publisher_->publish(rgb_rect_camera_info);
+          //rgb_rect_camerainfo_publisher_->publish(rgb_rect_camera_info);
         }
       }
     }
@@ -1189,7 +1191,7 @@ void K4AROSDevice::framePublisherThread()
 
       if (params_.point_cloud || params_.rgb_point_cloud)
       {
-        pointcloud_publisher_->publish(*point_cloud);
+        //pointcloud_publisher_->publish(*point_cloud);
       }
     }
 
