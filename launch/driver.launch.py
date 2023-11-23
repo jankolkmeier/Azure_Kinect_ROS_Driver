@@ -49,6 +49,10 @@ def generate_launch_description():
 
     return LaunchDescription([
     DeclareLaunchArgument(
+        'namespace',
+        default_value="",
+        description="Namespace of nodes."),
+    DeclareLaunchArgument(
         'overwrite_robot_description',
         default_value="true" ,
         description="Flag to publish a standalone azure_description instead of the default robot_description parameter."),
@@ -149,6 +153,7 @@ def generate_launch_description():
         package='azure_kinect_ros_driver',
         executable='node',
         output='screen',
+        namespace=launch.substitutions.LaunchConfiguration("namespace"),
         parameters=[
             {'depth_enabled': launch.substitutions.LaunchConfiguration('depth_enabled')},
             {'depth_mode': launch.substitutions.LaunchConfiguration('depth_mode')},
@@ -177,12 +182,14 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
+        namespace=launch.substitutions.LaunchConfiguration("namespace"),
         parameters = [{'robot_description' : urdf}],
         condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("overwrite_robot_description"))),
     launch_ros.actions.Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
+        namespace=launch.substitutions.LaunchConfiguration("namespace"),
         arguments=[urdf_path],
         condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("overwrite_robot_description"))),
     # If flag overwrite_robot_description is not set:
@@ -191,12 +198,14 @@ def generate_launch_description():
         executable='robot_state_publisher',
         name='robot_state_publisher',
         parameters = [{'robot_description' : urdf}],
+        namespace=launch.substitutions.LaunchConfiguration("namespace"),
         remappings=remappings,
         condition=conditions.UnlessCondition(launch.substitutions.LaunchConfiguration("overwrite_robot_description"))),
     launch_ros.actions.Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
+        namespace=launch.substitutions.LaunchConfiguration("namespace"),
         arguments=[urdf_path],
         remappings=remappings,
         condition=conditions.UnlessCondition(launch.substitutions.LaunchConfiguration("overwrite_robot_description"))),
